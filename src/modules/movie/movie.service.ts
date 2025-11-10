@@ -23,15 +23,32 @@ export class MovieService {
     return movies;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} movie`;
+  async findOne(id: number) {
+    const movie = await this.movieRepository.findOneBy({ id });
+    if (!movie) {
+      throw new Error(`Pelicula con el ID ${id} no encontrada`);
+    }
+    return movie;
   }
 
-  update(id: number, updateMovieDto: UpdateMovieDto) {
-    return `This action updates a #${id} movie`;
+  async update(id: number, updateMovieDto: UpdateMovieDto) {
+    const movie = await this.movieRepository.preload({
+      id: id,
+      ...updateMovieDto,
+    });
+    if (!movie) {
+      throw new Error(`Pelicula con el ID ${id} no encontrada`);
+    }
+    await this.movieRepository.save(movie);
+    return movie;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} movie`;
+  async remove(id: number) {
+    const movie = await this.movieRepository.findOneBy({ id });
+    if (!movie) {
+      throw new Error(`Pelicula con el ID ${id} no encontrada`);
+    }
+    await this.movieRepository.remove(movie);
+    return movie;
   }
 }

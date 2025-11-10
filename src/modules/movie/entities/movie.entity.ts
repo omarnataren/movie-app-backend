@@ -14,6 +14,6 @@ export class Movie {
   releaseDate: number;
   @Column()
   poster_url: string;
-  @Column()
+  @Column({ type: 'float', default: 0 })
   rating: number;
 }
